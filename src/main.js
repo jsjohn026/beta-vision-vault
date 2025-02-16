@@ -40,13 +40,23 @@ async function addVisionsToDom(){
   console.log(response.documents[0])
   response.documents.forEach(vision => {
     const li = document.createElement('li')
-    li.textContent = `${vision['app-name']}`
     li.id = vision.$id
+    const visionName = document.createElement('h4')
+    visionName.textContent = `${vision['app-name']}`
+    visionName.className = 'vision-title'
+
+    const span = document.createElement('span')
+    span.innerHTML = `Purpose: <br> ${vision.purpose}`
+    
+    const paragraph = document.createElement('p')
+    paragraph.innerHTML = `Features: <br> ${vision.features}`
 
     const deleteBtn = document.createElement('button')
     deleteBtn.textContent = '🧨'
     deleteBtn.onclick = () => removeVision(vision.$id)
-
+    li.appendChild(visionName)
+    li.appendChild(span)
+    li.appendChild(paragraph)
     li.appendChild(deleteBtn)
 
     document.querySelector('ul').appendChild(li)

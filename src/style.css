@@ -74,6 +74,20 @@ li {
   list-style: none;
   float: left;
   background-color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 12em;
+  height: 15em;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+}
+
+h4 {
+  margin: 0;
+  padding: 1em;
+  height: 100%;
 }
 
 .card {
@@ -84,6 +98,18 @@ li {
   color: #888;
 } */
 
+span {
+  height: 100%;
+}
+
+p {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: 100%;
+}
+
 form {
   padding: 5em;
 }
@@ -91,14 +117,22 @@ form {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 1em 1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: transparent;
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
+li button {
+  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  height: 3em;
+}
+
 button:hover {
   border-color: #646cff;
 }
