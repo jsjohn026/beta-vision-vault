@@ -1,24 +1,67 @@
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import { PROJECT_ID, DATABASE_ID, COLLECTION_ID } from "./shhh";
+import { Client, Databases, ID } from "appwrite";
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+const client = new Client()
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject(PROJECT_ID);
 
-setupCounter(document.querySelector('#counter'))
+const databases = new Databases(client);
+const form = document.querySelector('form')
+
+form.addEventListener('submit', addVision)
+
+function addVision(e) {
+  e.preventDefault()
+  const vision = databases.createDocument(
+    DATABASE_ID,
+    COLLECTION_ID,
+    ID.unique(),
+    { "app-name": e.target.appName.value,
+      "date-added": e.target.dateAdded.value,
+      "purpose": e.target.purpose.value,
+      "features": e.target.features.value
+    }
+  )
+  vision.then(function (response) {
+    addVisionsToDom()
+  }, function (error) {
+    console.log(error)
+  })
+  form.reset()
+}
+
+async function addVisionsToDom(){
+  document.querySelector('ul').innerHTML = ""
+  let response = await databases.listDocuments(
+    DATABASE_ID,
+    COLLECTION_ID,    
+  )
+  console.log(response.documents[0])
+  response.documents.forEach(vision => {
+    const li = document.createElement('li')
+    li.textContent = `${vision['app-name']}`
+    li.id = vision.$id
+
+    const deleteBtn = document.createElement('button')
+    deleteBtn.textContent = '🧨'
+    deleteBtn.onclick = () => removeVision(vision.$id)
+
+    li.appendChild(deleteBtn)
+
+    document.querySelector('ul').appendChild(li)
+
+  });
+
+  async function removeVision(id) {
+    const result = await databases.deleteDocument(
+      DATABASE_ID,
+      COLLECTION_ID,
+      id
+    )
+    document.getElementById(id).remove()
+    // result.then(() => location.reload())
+  }
+}
+
+addVisionsToDom()
